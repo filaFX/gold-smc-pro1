@@ -432,5 +432,79 @@
   });
 })();
 </script>
+ <!-- GOLD SMC PRO - LIVE PRICE DISPLAY -->
+<section style="
+  margin:20px auto;
+  padding:20px;
+  max-width:900px;
+  background:#101010;
+  border:1px solid #d4af37;
+  border-radius:14px;
+  color:#fff;
+  font-family:Arial,sans-serif;
+">
+  <h2 style="color:#d4af37;">XAUUSD PRICE MONITOR</h2>
+
+  <p>Indicative gold spot price (USD per troy ounce)</p>
+
+  <div id="gold-price-value"
+       style="font-size:32px;font-weight:bold;color:#d4af37;">
+    Loading price...
+  </div>
+
+  <p id="gold-price-status" style="color:#aaa;">
+    Connecting to price source...
+  </p>
+
+  <button id="gold-price-refresh" style="
+    background:#d4af37;
+    color:#000;
+    padding:10px 16px;
+    border:0;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+  ">REFRESH PRICE</button>
+
+  <p style="font-size:12px;color:#999;">
+    Indicative spot data only; not a broker quote or trading signal.
+  </p>
+</section>
+
+<script src="./gold-price.js"></script>
+
+<script>
+(function () {
+  const priceElement = document.getElementById("gold-price-value");
+  const statusElement = document.getElementById("gold-price-status");
+  const refreshButton = document.getElementById("gold-price-refresh");
+
+  async function refreshGoldPrice() {
+    priceElement.textContent = "Loading...";
+    statusElement.textContent = "Requesting latest available data...";
+
+    try {
+      const result = await window.GoldPrice.getGoldPrice();
+
+      priceElement.textContent = "$" + result.price.toLocaleString(
+        "en-US",
+        { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+      );
+
+      statusElement.textContent =
+        "Source: " + result.source +
+        " | Feed status: " + result.status +
+        " | Retrieved: " + new Date(result.updatedAt).toLocaleTimeString();
+    } catch (error) {
+      priceElement.textContent = "Unavailable";
+      statusElement.textContent =
+        error.message + " Try again later.";
+    }
+  }
+
+  refreshButton.addEventListener("click", refreshGoldPrice);
+  refreshGoldPrice();
+})();
+</script> 
 </body>
 </html>
