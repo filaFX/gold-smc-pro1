@@ -552,13 +552,8 @@
           });
 
           if (!result.error) {
-            showMessage(
-              "Login successful! Your account is connected. We'll build your dashboard next.",
-              true
-            );
+               window.location.href = "dashboard.html";
           }
-        }
-
         if (result && result.error) {
           showMessage(result.error.message);
         }
