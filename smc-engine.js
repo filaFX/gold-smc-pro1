@@ -179,7 +179,70 @@ const SMC = (() => {
     events.sort((a, b) => a.index - b.index);
     return events;
   }
+  function detectCHoCH(candles, swings, bos) {
+  const events = [];
+  const structure = [...bos].sort((a, b) => a.index - b.index);
 
+  if (structure.length === 0) {
+    return events;
+  }
+
+  let currentBias = null;
+  let processedBOS = 0;
+
+  for (let i = 0; i < candles.length; i++) {
+    while (
+      processedBOS < structure.length &&
+      structure[processedBOS].index <= i
+    ) {
+      const event = structure[processedBOS];
+
+      currentBias =
+        event.type === "BULLISH_BOS" ? "BULLISH" : "BEARISH";
+
+      processedBOS++;
+    }
+
+    for (const swing of swings.lows) {
+      if (
+        currentBias === "BULLISH" &&
+        swing.index < i &&
+        candles[i].close < swing.price
+      ) {
+        events.push({
+          type: "BEARISH_CHOCH",
+          index: i,
+          level: swing.price,
+          swingIndex: swing.index
+        });
+
+        currentBias = "BEARISH";
+        break;
+      }
+    }
+
+    if (currentBias === "BEARISH") {
+      for (const swing of swings.highs) {
+        if (
+          swing.index < i &&
+          candles[i].close > swing.price
+        ) {
+          events.push({
+            type: "BULLISH_CHOCH",
+            index: i,
+            level: swing.price,
+            swingIndex: swing.index
+          });
+
+          currentBias = "BULLISH";
+          break;
+        }
+      }
+    }
+  }
+
+  return events;
+  }
   function detectFVG(candles) {
     const gaps = [];
 
