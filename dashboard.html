@@ -1,448 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOLD SMC PRO | Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>GOLD SMC PRO | Dashboard</title>
 
-<style>
-:root {
-  --bg: #080a0f;
-  --panel: #11151e;
-  --gold: #e6bd62;
-  --gold2: #ffe4a0;
-  --text: #f5f5f5;
-  --muted: #9299a8;
-  --green: #43d9a3;
-  --red: #ff6978;
-  --border: #292b35;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-}
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 5%;
-  border-bottom: 1px solid var(--border);
-  background: #0c0e14;
-}
-.brand { color: var(--gold); font-weight: 900; letter-spacing: 1.5px; }
-.brand small {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 5px;
-}
-button, input, select {
-  font: inherit;
-  border-radius: 8px;
-}
-button {
-  cursor: pointer;
-  padding: 11px 15px;
-  border: 1px solid var(--border);
-  background: #1a1d27;
-  color: var(--text);
-}
-button:hover { border-color: var(--gold); }
-.gold-btn {
-  background: var(--gold);
-  color: #17130a;
-  font-weight: bold;
-  border: 0;
-}
-main { max-width: 1250px; margin: auto; padding: 25px 18px 50px; }
-h1 { font-size: clamp(25px, 4vw, 36px); margin-bottom: 8px; }
-h2 { font-size: 17px; margin-top: 0; }
-h3 { font-size: 13px; color: var(--muted); font-weight: normal; }
-.muted { color: var(--muted); }
-.gold { color: var(--gold); }
-.green { color: var(--green); }
-.red { color: var(--red); }
-.notice {
-  background: #19170f;
-  border: 1px solid #5d4b25;
-  color: var(--gold2);
-  padding: 13px;
-  border-radius: 10px;
-  margin: 18px 0;
-  line-height: 1.5;
-  font-size: 13px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin: 20px 0;
-}
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px;
-  min-width: 0;
-}
-.value { font-size: 25px; font-weight: bold; margin-top: 12px; }
-.layout {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
-}
-.chart {
-  min-height: 260px;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  background:
-    linear-gradient(#ffffff08 1px, transparent 1px),
-    linear-gradient(90deg, #ffffff08 1px, transparent 1px);
-  background-size: 30px 30px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.row:last-child { border-bottom: 0; }
-label { display: block; font-size: 12px; color: var(--muted); margin: 14px 0 7px; }
-input, select {
-  width: 100%;
-  padding: 12px;
-  background: #090c12;
-  color: white;
-  border: 1px solid var(--border);
-}
-.controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.full { width: 100%; margin-top: 12px; }
-.status {
-  display: inline-block;
-  padding: 6px 9px;
-  border-radius: 20px;
-  background: #29231a;
-  color: var(--gold);
-  font-size: 11px;
-}
-footer {
-  text-align: center;
-  padding: 25px;
-  color: var(--muted);
-  font-size: 12px;
-}
-@media(max-width: 800px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .layout { grid-template-columns: 1fr; }
-}
-@media(max-width: 400px) {
-  header { padding: 15px 12px; }
-  main { padding: 20px 12px; }
-  .card { padding: 14px; }
-  .value { font-size: 21px; }
-}
-</style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #080808;
+      color: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #40351a;
+    }
+
+    h1, h2 {
+      color: #d8b44c;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: #999;
+      font-size: 12px;
+      margin-top: 7px;
+    }
+
+    button {
+      padding: 11px 16px;
+      border: 1px solid #d8b44c;
+      border-radius: 7px;
+      background: #d8b44c;
+      color: #080808;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      color: #d8b44c;
+      background: #111;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+    }
+
+    .banner {
+      padding: 14px;
+      border: 1px solid #756022;
+      border-radius: 8px;
+      background: #18150c;
+      color: #e8cf80;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .card {
+      padding: 20px;
+      border: 1px solid #333;
+      border-radius: 12px;
+      background: #111;
+    }
+
+    .label {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .value {
+      margin-top: 12px;
+      color: #d8b44c;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 9px;
+      padding: 12px;
+      color: white;
+      background: #080808;
+      border: 1px solid #444;
+      border-radius: 7px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    #status {
+      margin-top: 15px;
+      color: #d8b44c;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .chart {
+      display: flex;
+      min-height: 220px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 18px;
+      padding: 20px;
+      border: 1px dashed #51431f;
+      border-radius: 10px;
+      color: #888;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    footer {
+      margin-top: 35px;
+      color: #777;
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-  <div class="brand">
-    GOLD SMC PRO
-    <small>SMART MONEY CONCEPTS TERMINAL</small>
+  <div>
+    <h1>GOLD SMC PRO</h1>
+    <div class="subtitle">SMART MONEY CONCEPTS DASHBOARD</div>
   </div>
-  <button id="logout">Log out ↗</button>
+
+  <button id="logoutButton" class="secondary" type="button">
+    LOG OUT
+  </button>
 </header>
 
 <main>
-  <h1>Trading Dashboard</h1>
-  <div class="muted">Gold market analysis and bot controls</div>
 
-  <div class="notice">
-    ⚠ DEMO MODE — Market readings and bot activity on this page are
-    simulated. No live market feed or real orders are connected.
+  <div class="banner">
+    DEMO MODE — This dashboard does not receive live market prices
+    or place real trades. All strategy readings are placeholders.
   </div>
 
-  <div class="grid">
-    <section class="card">
-      <h3>TRADING PAIR</h3>
-      <div class="value gold">XAUUSD</div>
-      <p class="muted">Gold / US Dollar</p>
-    </section>
+  <div id="status">Checking your login session...</div>
 
-    <section class="card">
-      <h3>BOT STATUS</h3>
-      <div class="value" id="bot-status">STOPPED</div>
-      <p class="muted">Simulated engine</p>
-    </section>
+  <section class="grid">
 
-    <section class="card">
-      <h3>CYCLE TARGET</h3>
-      <div class="value gold" id="target-display">$100</div>
-      <p class="muted">Target, not guaranteed profit</p>
-    </section>
-
-    <section class="card">
-      <h3>TRADE DECISION</h3>
-      <div class="value" id="decision">WAIT</div>
-      <p class="muted">Demo signal only</p>
-    </section>
-  </div>
-
-  <div class="layout">
-    <section class="card">
-      <h2>🥇 XAUUSD Market Monitor</h2>
-
-      <div class="row">
-        <span>Market feed</span>
-        <span class="status">NOT CONNECTED</span>
-      </div>
-
-      <div class="chart">
-        <div>
-          <div class="gold" style="font-size:20px;font-weight:bold">
-            GOLD CHART AREA
-          </div>
-          <p class="muted">Live chart integration comes later.</p>
-          <p class="muted">No real price is displayed in demo mode.</p>
-        </div>
-      </div>
-
-      <h2 style="margin-top:22px">Multi-Timeframe Analysis</h2>
-
-      <div class="row">
-        <span>H1 — Main structure</span>
-        <strong class="muted">Waiting for data</strong>
-      </div>
-      <div class="row">
-        <span>M15 — Setup confirmation</span>
-        <strong class="muted">Waiting for data</strong>
-      </div>
-      <div class="row">
-        <span>M1 — Entry confirmation</span>
-        <strong class="muted">Waiting for data</strong>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>🤖 Bot Configuration</h2>
-
-      <label for="lot">XAUUSD lot size</label>
-      <input id="lot" type="number" value="0.02" min="0.01"
-        step="0.01">
-
-      <label for="target">Net cycle target ($)</label>
-      <input id="target" type="number" value="100" min="1" step="1">
-
-      <label for="daily-loss">Demo daily loss limit ($)</label>
-      <input id="daily-loss" type="number" value="25" min="1" step="1">
-
-      <label for="max-drawdown">Demo maximum drawdown ($)</label>
-      <input id="max-drawdown" type="number" value="50" min="1" step="1">
-
-      <label for="timeframe">Entry timeframe</label>
-      <select id="timeframe">
-        <option>M1</option>
-        <option>M5</option>
-        <option>M15</option>
-      </select>
-
-      <button class="gold-btn full" id="save-settings">
-        Save Demo Settings
-      </button>
-
-      <div class="controls">
-        <button id="start-bot">Start Demo</button>
-        <button id="stop-bot">Stop Demo</button>
-      </div>
-
-      <p class="muted" id="settings-message" aria-live="polite">
-        Demo mode is stopped.
-      </p>
-    </section>
-  </div>
-
-  <div class="layout">
-    <section class="card">
-      <h2>🧠 SMC Analysis</h2>
-      <div class="row"><span>Market structure</span><span class="muted">No data</span></div>
-      <div class="row"><span>Liquidity sweeps</span><span class="muted">No data</span></div>
-      <div class="row"><span>Break of Structure</span><span class="muted">No data</span></div>
-      <div class="row"><span>FVG / IFVG</span><span class="muted">No data</span></div>
-      <div class="row"><span>Order / Breaker Blocks</span><span class="muted">No data</span></div>
-    </section>
-
-    <section class="card">
-      <h2>📊 Volume Profile</h2>
-      <div class="row"><span>POC</span><span class="muted">Awaiting data</span></div>
-      <div class="row"><span>VAH</span><span class="muted">Awaiting data</span></div>
-      <div class="row"><span>VAL</span><span class="muted">Awaiting data</span></div>
-      <p class="muted">
-        Values will be estimated from available market-volume data when
-        a compatible feed is connected.
-      </p>
-    </section>
-  </div>
-
-  <section class="card" style="margin-top:16px">
-    <h2>🛡️ Risk Protection</h2>
-    <div class="row">
-      <span>Daily loss limit</span>
-      <span class="gold">Configured for demo</span>
+    <div class="card">
+      <div class="label">Trading Symbol</div>
+      <div class="value">XAUUSD</div>
+      <p class="label">Gold / US Dollar</p>
     </div>
-    <div class="row">
-      <span>Maximum drawdown</span>
-      <span class="gold">Configured for demo</span>
+
+    <div class="card">
+      <div class="label">Bot Status</div>
+      <div class="value" id="botStatus">STOPPED</div>
+      <p class="label">Demo simulation only</p>
     </div>
-    <div class="row">
-      <span>Broker stop-loss validation</span>
-      <span class="muted">Not connected</span>
+
+    <div class="card">
+      <div class="label">Demo Lot Size</div>
+      <input
+        id="lotSize"
+        type="number"
+        min="0.01"
+        max="1"
+        step="0.01"
+        value="0.02">
     </div>
-    <div class="row">
-      <span>Emergency stop</span>
-      <button id="emergency-stop">STOP DEMO</button>
+
+    <div class="card">
+      <div class="label">Demo Profit Target ($)</div>
+      <input
+        id="profitTarget"
+        type="number"
+        min="1"
+        max="1000"
+        step="1"
+        value="100">
     </div>
-    <p class="muted">
-      These settings do not protect a real trading account yet. Real
-      protection requires a server-side execution engine and broker checks.
-    </p>
+
   </section>
 
-  <section class="card" style="margin-top:16px">
-    <h2>📜 Activity Log</h2>
-    <div id="activity" class="muted" aria-live="polite">
-      Dashboard opened. Demo engine is stopped.
+  <section class="card" style="margin-top:20px;">
+    <h2>SMC Analysis</h2>
+
+    <p class="label">Market Structure: Waiting for market data</p>
+    <p class="label">Liquidity Sweep: Not calculated</p>
+    <p class="label">Break of Structure (BOS): Not calculated</p>
+    <p class="label">Fair Value Gap (FVG): Not calculated</p>
+    <p class="label">Order Blocks: Not calculated</p>
+    <p class="label">Volume Profile: Not calculated</p>
+
+    <div class="chart">
+      Chart placeholder<br>
+      A market-data connection is required to display real XAUUSD candles.
     </div>
+
+    <div class="actions">
+      <button id="startButton" type="button">START DEMO</button>
+      <button id="stopButton" class="secondary" type="button">STOP DEMO</button>
+    </div>
+
+    <div id="demoMessage"></div>
   </section>
+
+  <footer>
+    GOLD SMC PRO © 2026 · Demo interface
+  </footer>
+
 </main>
 
-<footer>
-  GOLD SMC PRO · DEMO INTERFACE · Real trading not connected
-</footer>
-
 <script>
-/*
-  IMPORTANT:
-  Replace these two placeholders with the SAME Project URL and
-  publishable key used in index.html.
-  Never use a service_role or secret key in browser code.
-*/
-const SUPABASE_URL = "https://xgqhvebubohrthtxlxgj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_3i0SevSZ8PD0vipdMf8GQQ_In-MkLAI";
+  // Use the same project and publishable key as index.html.
 
-let client = null;
-let demoRunning = false;
+  const SUPABASE_URL =
+    "https://xgqhvebubohrthtxlxgj.supabase.co";
 
-const statusEl = document.getElementById("bot-status");
-const messageEl = document.getElementById("settings-message");
-const activityEl = document.getElementById("activity");
+  const SUPABASE_KEY =
+    "sb_publishable_3i0SevSZ8PD0vipdMf8GQQ_In-MkLAI";
 
-function logActivity(message) {
-  activityEl.textContent =
-    new Date().toLocaleTimeString() + " — " + message;
-}
+  let client = null;
+  let demoRunning = false;
 
-function stopDemo(message) {
-  demoRunning = false;
-  statusEl.textContent = "STOPPED";
-  statusEl.className = "value red";
-  messageEl.textContent = message;
-  logActivity(message);
-}
+  const statusElement = document.getElementById("status");
 
-async function initializeDashboard() {
-  if (
-    !window.supabase ||
-    !SUPABASE_URL.startsWith("https://") ||
-    SUPABASE_KEY === "YOUR_SUPABASE_PUBLIC_KEY"
-  ) {
-    document.body.innerHTML =
-      "<main><h1>Configuration required</h1>" +
-      "<p>Add your Supabase Project URL and publishable key " +
-      "to dashboard.html.</p></main>";
-    return;
+  async function initializeDashboard() {
+    try {
+      if (!window.supabase) {
+        statusElement.textContent =
+          "ERROR: Supabase library failed to load. Check your internet connection.";
+        return;
+      }
+
+      if (
+        !SUPABASE_URL.startsWith("https://") ||
+        SUPABASE_KEY === "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE"
+      ) {
+        statusElement.textContent =
+          "ERROR: Add the existing Supabase publishable key to dashboard.html.";
+        return;
+      }
+
+      client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+      const { data, error } = await client.auth.getSession();
+
+      if (error) {
+        statusElement.textContent =
+          "SESSION ERROR: " + error.message;
+        return;
+      }
+
+      if (!data.session) {
+        statusElement.textContent =
+          "No active session found. Returning to login...";
+
+        setTimeout(() => {
+          window.location.replace("index.html");
+        }, 1500);
+
+        return;
+      }
+
+      statusElement.textContent =
+        "Connected successfully. Demo dashboard ready.";
+
+    } catch (error) {
+      statusElement.textContent =
+        "ERROR: " + (error.message || "Unknown dashboard error.");
+    }
   }
 
-  client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  document.getElementById("logoutButton")
+    .addEventListener("click", async () => {
 
-  const { data, error } = await client.auth.getSession();
+      if (client) {
+        await client.auth.signOut();
+      }
 
-  if (error || !data.session) {
-    window.location.replace("index.html");
-    return;
-  }
+      window.location.replace("index.html");
+    });
 
-  logActivity("Signed in. Demo dashboard ready.");
-}
+  document.getElementById("startButton")
+    .addEventListener("click", () => {
 
-document.getElementById("logout").addEventListener("click", async () => {
-  if (client) await client.auth.signOut();
-  window.location.replace("index.html");
-});
+      demoRunning = true;
 
-document.getElementById("save-settings").addEventListener("click", () => {
-  const lot = Number(document.getElementById("lot").value);
-  const target = Number(document.getElementById("target").value);
-  const dailyLoss = Number(document.getElementById("daily-loss").value);
-  const drawdown = Number(document.getElementById("max-drawdown").value);
+      document.getElementById("botStatus").textContent =
+        "DEMO RUNNING";
 
-  if (
-    !Number.isFinite(lot) || lot <= 0 ||
-    !Number.isFinite(target) || target <= 0 ||
-    !Number.isFinite(dailyLoss) || dailyLoss <= 0 ||
-    !Number.isFinite(drawdown) || drawdown <= 0
-  ) {
-    messageEl.textContent = "Enter valid positive values in every field.";
-    return;
-  }
+      document.getElementById("demoMessage").textContent =
+        "Demo started. No real orders are being placed.";
+    });
 
-  document.getElementById("target-display").textContent =
-    "$" + target.toFixed(2);
+  document.getElementById("stopButton")
+    .addEventListener("click", () => {
 
-  messageEl.textContent =
-    "Settings updated in this page only. No real orders are placed.";
-  logActivity("Demo settings changed.");
-});
+      demoRunning = false;
 
-document.getElementById("start-bot").addEventListener("click", () => {
-  if (demoRunning) return;
+      document.getElementById("botStatus").textContent =
+        "STOPPED";
 
-  demoRunning = true;
-  statusEl.textContent = "DEMO RUNNING";
-  statusEl.className = "value gold";
-  document.getElementById("decision").textContent = "WAIT";
-  messageEl.textContent =
-    "Demo only: no live prices, signals, or orders are active.";
-  logActivity("Demo started. Waiting for real market-data integration.");
-});
+      document.getElementById("demoMessage").textContent =
+        "Demo stopped.";
+    });
 
-document.getElementById("stop-bot").addEventListener("click", () => {
-  stopDemo("Demo stopped by user.");
-});
-
-document.getElementById("emergency-stop").addEventListener("click", () => {
-  stopDemo("Emergency stop pressed. Demo activity halted.");
-});
-
-initializeDashboard();
+  initializeDashboard();
 </script>
 
 </body>
-  </html>
+</html>
