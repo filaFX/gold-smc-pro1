@@ -338,6 +338,99 @@
 
   initializeDashboard();
 </script>
+<!-- GOLD SMC PRO - SMC ENGINE TEST PANEL -->
+<section id="smc-engine-panel" style="
+  margin:20px auto;
+  padding:20px;
+  max-width:900px;
+  background:#101010;
+  border:1px solid #d4af37;
+  border-radius:14px;
+  color:#f5f5f5;
+  font-family:Arial,sans-serif;
+">
+  <h2 style="color:#d4af37;">GOLD SMC PRO — SMC ENGINE</h2>
 
+  <p style="color:#aaa;">
+    Smart Money Concepts analysis engine test.
+  </p>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button id="smc-test-btn" style="
+      background:#d4af37;
+      color:#000;
+      border:0;
+      padding:12px 18px;
+      border-radius:8px;
+      font-weight:bold;
+      cursor:pointer;
+    ">TEST SMC ENGINE</button>
+
+    <span id="smc-engine-status" style="padding:10px;color:#f0c94a;">
+      Waiting for test...
+    </span>
+  </div>
+
+  <pre id="smc-engine-output" style="
+    margin-top:15px;
+    padding:14px;
+    background:#080808;
+    border:1px solid #333;
+    border-radius:8px;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    color:#ddd;
+  ">SMC results will appear here.</pre>
+
+  <p style="color:#999;font-size:12px;">
+    DEMO ONLY — sample candles, not live XAUUSD data or trade signals.
+  </p>
+</section>
+
+<script src="./smc-engine.js"></script>
+
+<script>
+(function () {
+  const button = document.getElementById("smc-test-btn");
+  const status = document.getElementById("smc-engine-status");
+  const output = document.getElementById("smc-engine-output");
+
+  if (!button || !status || !output) return;
+
+  button.addEventListener("click", function () {
+    try {
+      if (!window.GoldSMC ||
+          typeof window.GoldSMC.analyze !== "function") {
+        throw new Error(
+          "SMC engine not loaded. Check that smc-engine.js exists."
+        );
+      }
+
+      const candles = [
+        {time:1,open:100,high:103,low:99,close:102,volume:100},
+        {time:2,open:102,high:105,low:101,close:104,volume:120},
+        {time:3,open:104,high:106,low:102,close:103,volume:130},
+        {time:4,open:103,high:104,low:98,close:100,volume:150},
+        {time:5,open:100,high:102,low:97,close:101,volume:140},
+        {time:6,open:101,high:108,low:100,close:107,volume:180},
+        {time:7,open:107,high:110,low:106,close:109,volume:200},
+        {time:8,open:109,high:111,low:105,close:106,volume:170},
+        {time:9,open:106,high:107,low:101,close:102,volume:160},
+        {time:10,open:102,high:109,low:101,close:108,volume:190}
+      ];
+
+      const result = window.GoldSMC.analyze(candles);
+
+      status.textContent = "ENGINE TEST COMPLETED";
+      status.style.color = "#45df85";
+      output.textContent = JSON.stringify(result, null, 2);
+    } catch (error) {
+      status.textContent = "ENGINE TEST FAILED";
+      status.style.color = "#ff6464";
+      output.textContent = error.message;
+    }
+  });
+})();
+</script>
 </body>
 </html>
