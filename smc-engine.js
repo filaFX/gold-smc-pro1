@@ -87,39 +87,60 @@ const SMC = (() => {
   }
 
   function detectBOS(candles, swings) {
-    const events = [];
+  const events = [];
+  const brokenLevels = new Set();
 
-    // A swing must be confirmed before a later candle can break it.
-    for (const swing of swings.highs) {
-      for (let i = swing.index + 1; i < candles.length; i++) {
-        if (candles[i].close > swing.price) {
-          events.push({
-            type: "BULLISH_BOS",
-            index: i,
-            level: swing.price
-          });
-          break;
-        }
+  const swingLevels = [
+    ...swings.highs.map(s => ({
+      type: "HIGH",
+      index: s.index,
+      price: s.price
+    })),
+    ...swings.lows.map(s => ({
+      type: "LOW",
+      index: s.index,
+      price: s.price
+    }))
+  ].sort((a, b) => a.index - b.index);
+
+  for (let i = 0; i < candles.length; i++) {
+    const candle = candles[i];
+
+    for (const swing of swingLevels) {
+      if (swing.index >= i) continue;
+
+      const key = `${swing.type}_${swing.index}`;
+
+      if (brokenLevels.has(key)) continue;
+
+      if (swing.type === "HIGH" && candle.close > swing.price) {
+        events.push({
+          type: "BULLISH_BOS",
+          index: i,
+          level: swing.price,
+          swingIndex: swing.index
+        });
+
+        brokenLevels.add(key);
+      }
+
+      if (swing.type === "LOW" && candle.close < swing.price) {
+        events.push({
+          type: "BEARISH_BOS",
+          index: i,
+          level: swing.price,
+          swingIndex: swing.index
+        });
+
+        brokenLevels.add(key);
       }
     }
-
-    for (const swing of swings.lows) {
-      for (let i = swing.index + 1; i < candles.length; i++) {
-        if (candles[i].close < swing.price) {
-          events.push({
-            type: "BEARISH_BOS",
-            index: i,
-            level: swing.price
-          });
-          break;
-        }
-      }
-    }
-
-    events.sort((a, b) => a.index - b.index);
-    return events;
   }
 
+  events.sort((a, b) => a.index - b.index);
+
+  return events;
+  }
   function detectLiquiditySweeps(candles, swings) {
     const events = [];
 
