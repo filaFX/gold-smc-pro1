@@ -1,1 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <title>GOLD SMC PRO | Trading Intelligence</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --gold: #d4af37;
+      --gold-light: #ffe7a0;
+      --bg: #080808;
+      --panel: #111111;
+      --text: #f5f5f5;
+      --muted: #999999;
+      --border: rgba(212,175,55,.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 10%, #33260b 0%, transparent 38%),
+        radial-gradient(ellipse at 90% 90%, #211905 0%, transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .top-line {
+      height: 3px;
+      background: linear-gradient(
+        90deg, transparent, var(--gold), var(--gold-light),
+        var(--gold), transparent
+      );
+      box-shadow: 0 0 20px #d4af3760;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 6%;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      color: var(--gold-light);
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 4px;
+      margin-top: 6px;
+    }
+
+    .live-label {
+      font-size: 10px;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 9px 12px;
+      letter-spacing: 1px;
+    }
+
+    main {
+      width: min(1050px, 92%);
+      margin: 65px auto;
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero {
+      animation: appear .8s ease both;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 4px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 1.04;
+      letter-spacing: -2px;
+    }
+
+    h1 span {
+      display: block;
+      color: var(--gold);
+      text-shadow: 0 0 35px #d4af3735;
+    }
+
+    .description {
+      max-width: 460px;
+      margin-top: 23px;
+      color: #b3b3b3;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .feature {
+      padding: 16px;
+      background: #ffffff05;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 12px;
+      color: #bdbdbd;
+    }
+
+    .feature strong {
+      display: block;
+      color: var(--gold-light);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .auth-card {
+      position: relative;
+      padding: 30px;
+      border-radius: 16px;
+      border: 1px solid #d4af3770;
+      background: linear-gradient(145deg, #171717, #0c0c0c);
+      box-shadow: 0 15px 70px #0009, 0 0 35px #d4af370c;
+      animation: appear 1s ease both;
+    }
+
+    .auth-card::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      width: 60%;
+      height: 2px;
+      background: var(--gold-light);
+      box-shadow: 0 0 16px var(--gold);
+    }
+
+    h2 {
+      font-size: 25px;
+      margin-bottom: 9px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      padding: 5px;
+      background: #080808;
+      border-radius: 9px;
+      margin-bottom: 23px;
+    }
+
+    .tab {
+      padding: 12px 5px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: #aaa;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: var(--gold-light);
+      border-color: var(--border);
+      background: #d4af3718;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      color: #d4d4d4;
+      font-size: 12px;
+      margin-bottom: 9px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      background: #080808;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px #d4af3715;
+    }
+
+    .primary {
+      width: 100%;
+      padding: 15px;
+      margin-top: 6px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(100deg, #b68a20, #ffe7a0, #d4af37);
+      color: #111;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform .2s, filter .2s;
+    }
+
+    .primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .primary:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .message {
+      display: none;
+      margin-top: 17px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #d4af3710;
+      border: 1px solid var(--border);
+      color: var(--gold-light);
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .security-note {
+      color: #777;
+      font-size: 10px;
+      line-height: 1.8;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 23px 6%;
+      text-align: center;
+      color: #777;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 800px) {
+      main {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        margin: 42px auto;
+      }
+
+      .hero {
+        text-align: center;
+      }
+
+      .description {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 430px;
+        margin: auto;
+      }
+
+      h1 {
+        font-size: clamp(42px, 12vw, 62px);
+      }
+    }
+
+    @media (max-width: 360px) {
+      header {
+        padding: 18px 4%;
+      }
+
+      .brand {
+        font-size: 15px;
+      }
+
+      .auth-card {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-line"></div>
+
+  <header>
+    <div class="brand">
+      GOLD SMC PRO
+      <small>TRADING INTELLIGENCE</small>
+    </div>
+
+    <div class="live-label">WEB PLATFORM</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">PRECISION • DISCIPLINE • CONTROL</div>
+
+      <h1>
+        Trade Gold.
+        <span>Think Smarter.</span>
+      </h1>
+
+      <p class="description">
+        Welcome to GOLD SMC PRO, a platform designed to bring
+        gold-market analysis, trading signals, and risk-management
+        tools into one professional workspace.
+      </p>
+
+      <div class="features">
+        <div class="feature">
+          <strong>01 / ANALYSIS</strong>
+          Gold-market insights and trading signals.
+        </div>
+
+        <div class="feature">
+          <strong>02 / RISK CONTROL</strong>
+          Tools designed to support disciplined trading.
+        </div>
+
+        <div class="feature">
+          <strong>03 / DASHBOARD</strong>
+          A workspace for your trading activity.
+        </div>
+
+        <div class="feature">
+          <strong>04 / YOUR ACCOUNT</strong>
+          A personal space for platform features.
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <h2 id="form-title">Welcome Back</h2>
+
+      <p class="subtitle" id="form-subtitle">
+        Sign in to access your GOLD SMC PRO account.
+      </p>
+
+      <div class="tabs">
+        <button class="tab active" id="login-tab" type="button">
+          LOG IN
+        </button>
+
+        <button class="tab" id="signup-tab" type="button">
+          SIGN UP
+        </button>
+      </div>
+
+      <form id="auth-form">
+        <div class="field">
+          <label for="email">EMAIL ADDRESS</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">PASSWORD</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="At least 8 characters"
+            minlength="8"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button class="primary" id="submit-button" type="submit">
+          SIGN IN SECURELY
+        </button>
+
+        <div class="message" id="auth-message" role="status"></div>
+      </form>
+
+      <p class="security-note">
+        Your account will use Supabase Authentication.<br>
+        Trading features will be added and tested separately.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    GOLD SMC PRO WEB · Built for disciplined market analysis.<br>
+    Trading involves risk. Signals and tools do not guarantee profits.
+  </footer>
+
+  <script>
+    /*
+      STEP 6:
+      Add your Supabase Project URL and PUBLIC publishable/anon key.
+      Never put a service-role key or secret key in this file.
+    */
+
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_KEY = "YOUR_SUPABASE_PUBLIC_KEY";
+
+    const form = document.getElementById("auth-form");
+    const loginTab = document.getElementById("login-tab");
+    const signupTab = document.getElementById("signup-tab");
+    const title = document.getElementById("form-title");
+    const subtitle = document.getElementById("form-subtitle");
+    const submitButton = document.getElementById("submit-button");
+    const message = document.getElementById("auth-message");
+
+    let mode = "login";
+    let supabaseClient = null;
+
+    if (
+      window.supabase &&
+      SUPABASE_URL.startsWith("https://") &&
+      SUPABASE_KEY !== "YOUR_SUPABASE_PUBLIC_KEY"
+    ) {
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+    }
+
+    function showMessage(text, success = false) {
+      message.style.display = "block";
+      message.textContent = text;
+      message.style.color = success ? "#a8e6b0" : "#ffe7a0";
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+
+      loginTab.classList.toggle("active", mode === "login");
+      signupTab.classList.toggle("active", mode === "signup");
+
+      title.textContent =
+        mode === "login" ? "Welcome Back" : "Create Account";
+
+      subtitle.textContent =
+        mode === "login"
+          ? "Sign in to access your GOLD SMC PRO account."
+          : "Create your account to get started.";
+
+      submitButton.textContent =
+        mode === "login" ? "SIGN IN SECURELY" : "CREATE ACCOUNT";
+
+      document.getElementById("password").autocomplete =
+        mode === "login" ? "current-password" : "new-password";
+
+      message.style.display = "none";
+    }
+
+    loginTab.addEventListener("click", () => setMode("login"));
+    signupTab.addEventListener("click", () => setMode("signup"));
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!supabaseClient) {
+        showMessage(
+          "Supabase is not connected yet. We'll add your project URL and public key in the next step."
+        );
+        return;
+      }
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      submitButton.disabled = true;
+      submitButton.textContent = "PLEASE WAIT...";
+
+      try {
+        let result;
+
+        if (mode === "signup") {
+          result = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: window.location.origin +
+                window.location.pathname
+            }
+          });
+
+          if (!result.error) {
+            showMessage(
+              result.data.session
+                ? "Account created! You can now continue."
+                : "Account created. Check your email for the verification link before signing in.",
+              true
+            );
+          }
+        } else {
+          result = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (!result.error) {
+            showMessage(
+              "Login successful! Your account is connected. We'll build your dashboard next.",
+              true
+            );
+          }
+        }
+
+        if (result && result.error) {
+          showMessage(result.error.message);
+        }
+      } catch (error) {
+        showMessage("Something went wrong. Please try again.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent =
+          mode === "login" ? "SIGN IN SECURELY" : "CREATE ACCOUNT";
+      }
+    });
+  </script>
+</body>
+</html>
